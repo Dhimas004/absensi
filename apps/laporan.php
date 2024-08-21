@@ -105,6 +105,16 @@ function menghitungMenitKerja($waktuMasuk, $waktuKeluar)
                     $jabatan = mysqli_fetch_assoc(mysqli_query($link, "SELECT * FROM data_jabatan WHERE id = '$id_jabatan'"))['jabatan'];
                     $jam_masuk = mysqli_fetch_assoc(mysqli_query($link, "SELECT MIN(waktu) as waktu FROM data_absen WHERE uid = '$uid' AND tanggal = '$tanggal' AND status = 'IN'"))['waktu'];
                     $jam_keluar = mysqli_fetch_assoc(mysqli_query($link, "SELECT MAX(waktu) as waktu FROM data_absen WHERE uid = '$uid' AND tanggal = '$tanggal' AND status = 'OUT'"))['waktu'];
+                    $total_telat = 0;
+                    if (strtotime($jam_masuk) > strtotime("08:00:00")) {
+                        $total_telat += menghitungMenitKerja("08:00:00", $jam_masuk);
+                    }
+
+                    if (strtotime($jam_keluar) < strtotime("20:00:00")) {
+                        $total_telat += menghitungMenitKerja($jam_keluar, "20:00:00");
+                    }
+
+
 
                     $show = 1;
 
@@ -127,8 +137,8 @@ function menghitungMenitKerja($waktuMasuk, $waktuKeluar)
                             <td align="center"><?= $jam_keluar ?></td>
                             <td align="center">
                                 <?php
-                                if (strtotime($jam_masuk) > strtotime("08:00:00")) {
-                                    echo "<span style='color:red; font-weight: bold'>" . menghitungMenitKerja("08:00:00", $jam_masuk) . "</span>";
+                                if ($total_telat != 0) {
+                                    echo "<span style='color:red; font-weight: bold'>$total_telat</span>";
                                 } else {
                                     echo "0";
                                 }
