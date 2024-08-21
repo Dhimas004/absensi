@@ -90,12 +90,12 @@ function menghitungMenitKerja($waktuMasuk, $waktuKeluar)
             <tbody>
                 <?php
                 $no = 1;
-                $list_data_absen = "SELECT * FROM data_absen WHERE 1";
+                $list_data_absen = "SELECT * FROM data_absen JOIN data_karyawan ON data_karyawan.uid = data_absen.uid WHERE 1";
                 if ($uid != '') $list_data_absen .= " AND `uid` = '$uid'";
                 if ($tanggal_awal != '' && $tanggal_akhir != '') {
                     $list_data_absen .= " AND `tanggal` BETWEEN '$tanggal_awal' AND '$tanggal_akhir'";
                 }
-                $list_data_absen .= " GROUP BY tanggal,uid ORDER BY tanggal, id";
+                $list_data_absen .= " GROUP BY tanggal,data_absen.uid ORDER BY tanggal, data_absen.id";
                 $list_data_absen = mysqli_query($link, $list_data_absen);
                 while ($row = mysqli_fetch_assoc($list_data_absen)) {
                     $tanggal = $row['tanggal'];
